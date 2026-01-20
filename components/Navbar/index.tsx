@@ -3,6 +3,7 @@ import { } from "phosphor-react-native";
 import React from "react";
 import { useColorScheme } from "nativewind";
 import { THEME } from "@/lib/theme";
+import { useNavigation } from "@/lib/navigation-context";
 
 
 const Sidebar = () => {
@@ -14,18 +15,21 @@ const Sidebar = () => {
 }
 
 export const BottomBar = ({ navlinks }: { navlinks: Array<{ key: string; title: string; icon: React.ElementType }> }) => {
-  const [index, setIndex] = React.useState(0);
+  const { currentRoute, navigate } = useNavigation();
   const { colorScheme } = useColorScheme();
   const theme = THEME[colorScheme ?? 'light'];
 
+  // Calculate the current index based on the route from context
+  const currentIndex = React.useMemo(() => {
+    const idx = navlinks.findIndex((r) => r.key === currentRoute);
+    return idx !== -1 ? idx : 0;
+  }, [currentRoute, navlinks]);
+
   return (
     <BottomNavigation.Bar
-      navigationState={{ index, routes: navlinks }}
+      navigationState={{ index: currentIndex, routes: navlinks }}
       onTabPress={({ route }) => {
-        const newIndex = navlinks.findIndex((r) => r.key === route.key);
-        if (newIndex !== -1) {
-          setIndex(newIndex);
-        }
+        navigate(route.key);
       }}
       activeColor={theme.primary}
       inactiveColor={theme.mutedForeground}

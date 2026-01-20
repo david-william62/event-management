@@ -7,6 +7,8 @@ import { useColorScheme } from 'nativewind';
 import * as React from 'react';
 import { Image, type ImageStyle, View } from 'react-native';
 import { House, User } from "phosphor-react-native"
+import { useNavigation } from '@/lib/navigation-context';
+import { THEME } from '@/lib/theme';
 
 const LOGO = {
   light: require('@/assets/images/react-native-reusables-light.png'),
@@ -14,7 +16,7 @@ const LOGO = {
 };
 
 const SCREEN_OPTIONS = {
-  title: 'Event Manager',
+  title: 'Event Management',
   headerTransparent: true,
   headerRight: () => <ThemeToggle />,
 };
@@ -33,23 +35,25 @@ const navlinks = [
 
 export default function Screen() {
   const { colorScheme } = useColorScheme();
+  const { currentRoute } = useNavigation();
+  const theme = THEME[colorScheme ?? 'light'];
 
-  const renderPage = (key: string) => {
+  const renderPage = React.useCallback((key: string) => {
     switch (key) {
       case 'home':
-        return <View><Text style={{ color: "white" }}>Home Page</Text></View>;
+        return <View><Text style={{ color: theme.text }}>Home Page</Text></View>;
       case 'profile':
-        return <View><Text style={{ color: "white" }}>Profile Page</Text></View>;
+        return <View><Text style={{ color: theme.text }}>Profile Page</Text></View>;
       default:
-        return <View><Text style={{ color: "white" }}>Home Page</Text></View>;
+        return <View><Text style={{ color: theme.text }}>Home Page</Text></View>;
     }
-  }
+  }, [theme]);
 
   return (
     <>
       <Stack.Screen options={SCREEN_OPTIONS} />
       <View className="flex-1 items-center justify-center gap-8 p-4">
-        {renderPage(navlinks[0].key)}
+        {renderPage(currentRoute)}
       </View>
     </>
   );

@@ -9,6 +9,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
 import { House, User } from "lucide-react-native";
 import { View, Text } from 'react-native';
+import { NavigationProvider } from '@/lib/navigation-context';
 
 export {
   ErrorBoundary,
@@ -25,11 +26,13 @@ export default function RootLayout() {
   const { colorScheme } = useColorScheme();
 
   return (
-    <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
-      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-      <Stack />
-      <PortalHost />
-      <Navbar navlinks={navlinks} />
-    </ThemeProvider>
+    <NavigationProvider initialRoute="home">
+      <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
+        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+        <Stack />
+        <PortalHost />
+        <Navbar navlinks={navlinks} />
+      </ThemeProvider>
+    </NavigationProvider>
   );
 }

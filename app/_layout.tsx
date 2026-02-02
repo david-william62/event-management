@@ -1,8 +1,9 @@
 import { BottomBar as Navbar } from '@/components/Navbar';
 import '@/global.css';
 
-import { NAV_THEME } from '@/lib/theme';
+import { NAV_THEME, PAPER_THEME } from '@/lib/theme';
 import { ThemeProvider } from '@react-navigation/native';
+import { PaperProvider } from 'react-native-paper';
 import { PortalHost } from '@rn-primitives/portal';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -27,12 +28,14 @@ export default function RootLayout() {
 
   return (
     <NavigationProvider initialRoute="home">
-      <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
-        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-        <Stack />
-        <PortalHost />
-        <Navbar navlinks={navlinks} />
-      </ThemeProvider>
+      <PaperProvider theme={PAPER_THEME[colorScheme ?? 'light']}>
+        <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
+          <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+          <Stack />
+          <PortalHost />
+          <Navbar navlinks={navlinks} />
+        </ThemeProvider>
+      </PaperProvider>
     </NavigationProvider>
   );
 }

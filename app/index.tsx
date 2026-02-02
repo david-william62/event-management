@@ -16,7 +16,7 @@ const LOGO = {
 };
 
 const SCREEN_OPTIONS = {
-  title: 'Event Management',
+  title: '',
   headerTransparent: true,
   headerRight: () => <ThemeToggle />,
 };
@@ -33,21 +33,29 @@ const navlinks = [
   { key: 'profile', title: 'Profile', icon: User },
 ]
 
+import HomePage from './Pages/Home';
+import EventDetails from './Pages/EventDetails';
+
 export default function Screen() {
   const { colorScheme } = useColorScheme();
-  const { currentRoute } = useNavigation();
+  const { currentRoute, eventData } = useNavigation();
   const theme = THEME[colorScheme ?? 'light'];
 
   const renderPage = React.useCallback((key: string) => {
     switch (key) {
       case 'home':
-        return <View><Text style={{ color: theme.text }}>Home Page</Text></View>;
+        return <HomePage />;
+      case 'eventDetails':
+        if (!eventData) {
+          return <HomePage />;
+        }
+        return <EventDetails {...eventData} />;
       case 'profile':
         return <View><Text style={{ color: theme.text }}>Profile Page</Text></View>;
       default:
-        return <View><Text style={{ color: theme.text }}>Home Page</Text></View>;
+        return <HomePage />;
     }
-  }, [theme]);
+  }, [theme, eventData]);
 
   return (
     <>

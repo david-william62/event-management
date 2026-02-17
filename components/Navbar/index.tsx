@@ -1,5 +1,4 @@
 import { BottomNavigation, Icon, Provider } from "react-native-paper";
-import { } from "phosphor-react-native";
 import React from "react";
 import { useColorScheme } from "nativewind";
 import { THEME } from "@/lib/theme";

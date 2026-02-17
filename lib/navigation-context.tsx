@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
+import { createContext, useContext, useState, useCallback, useMemo, ReactNode } from 'react';
 
 type EventData = {
   id: string;
@@ -29,7 +29,7 @@ export const NavigationProvider = ({
   children,
   initialRoute = 'home'
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   initialRoute?: string;
 }) => {
   const [currentRoute, setCurrentRoute] = useState(initialRoute);

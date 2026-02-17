@@ -8,8 +8,7 @@ import { PortalHost } from '@rn-primitives/portal';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
-import { House, User } from "lucide-react-native";
-import { View, Text } from 'react-native';
+import { HouseIcon as House, UserIcon as User } from "phosphor-react-native"
 import { NavigationProvider } from '@/lib/navigation-context';
 
 export {

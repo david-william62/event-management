@@ -35,6 +35,7 @@ const navlinks = [
 
 import HomePage from './Pages/Home';
 import EventDetails from './Pages/EventDetails';
+import ProfileScreen from './Pages/Profile';
 
 export default function Screen() {
   const { colorScheme } = useColorScheme();
@@ -51,7 +52,7 @@ export default function Screen() {
         }
         return <EventDetails {...eventData} />;
       case 'profile':
-        return <View><Text style={{ color: theme.text }}>Profile Page</Text></View>;
+        return <ProfileScreen />;
       default:
         return <HomePage />;
     }
@@ -60,7 +61,7 @@ export default function Screen() {
   return (
     <>
       <Stack.Screen options={SCREEN_OPTIONS} />
-      <View className="flex-1 items-center justify-center gap-8 p-4">
+      <View className={currentRoute === 'profile' ? 'flex-1' : 'flex-1 items-center justify-center gap-8 p-4'}>
         {renderPage(currentRoute)}
       </View>
     </>

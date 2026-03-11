@@ -1,14 +1,13 @@
 {
   "expo": {
-    "name": "eventmanager",
-    "slug": "eventmanager",
+    "name": "Event Manager",
+    "slug": "event-manager",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "eventmanager",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "jsEngine": "hermes",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -18,15 +17,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.college.eventmanager"
     },
     "android": {
+      "package": "com.college.eventmanager",
       "edgeToEdgeEnabled": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "package": "com.sealeopard.eventmanager"
+      }
     },
     "web": {
       "bundler": "metro",
@@ -34,15 +34,15 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
     },
     "extra": {
-      "router": {},
       "eas": {
-        "projectId": "9d2544c8-a450-4b43-aaf7-d2797ace8e4a"
+        "projectId": ""
       }
     }
   }

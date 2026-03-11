@@ -1,19 +1,22 @@
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
-import { Text } from '@/components/ui/text';
-import { Link, Stack } from 'expo-router';
-import { MoonStarIcon, StarIcon, SunIcon } from 'lucide-react-native';
+import { Stack } from 'expo-router';
+import { MoonStarIcon, SunIcon } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import * as React from 'react';
-import { Image, type ImageStyle, View } from 'react-native';
-import { House, User } from "phosphor-react-native"
+import { ActivityIndicator, View } from 'react-native';
+
+import HomePage from './Pages/Home';
+import EventDetails from './Pages/EventDetails';
+import ProfileScreen from './Pages/Profile';
+import Dashboard from './Pages/Dashboard';
+import CreateEvent from './Pages/Dashboard/CreateEvent';
+import LoginScreen from './Pages/Auth/Login';
+import RegisterScreen from './Pages/Auth/Register';
+import AdminPanel from './Pages/Admin';
+
 import { useNavigation } from '@/lib/navigation-context';
 import { THEME } from '@/lib/theme';
-
-const LOGO = {
-  light: require('@/assets/images/react-native-reusables-light.png'),
-  dark: require('@/assets/images/react-native-reusables-dark.png'),
-};
 
 const SCREEN_OPTIONS = {
   title: '',
@@ -21,47 +24,49 @@ const SCREEN_OPTIONS = {
   headerRight: () => <ThemeToggle />,
 };
 
-const IMAGE_STYLE: ImageStyle = {
-  height: 76,
-  width: 76,
-};
-
-const navlinks = [
-  { key: 'home', title: 'Home', icon: House },
-  // { key: 'search', title: 'Search', icon: 'magnify' },
-  // { key: 'notifications', title: 'Notifications', icon: 'bell' },
-  { key: 'profile', title: 'Profile', icon: User },
-]
-
-import HomePage from './Pages/Home';
-import EventDetails from './Pages/EventDetails';
-import ProfileScreen from './Pages/Profile';
-
 export default function Screen() {
   const { colorScheme } = useColorScheme();
-  const { currentRoute, eventData } = useNavigation();
-  const theme = THEME[colorScheme ?? 'light'];
+  const { currentRoute, eventData, authUser, isAuthLoading } = useNavigation();
 
-  const renderPage = React.useCallback((key: string) => {
+  // Show a centered spinner while we check SecureStore for a stored token
+  if (isAuthLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  const renderPage = (key: string) => {
+    // Auth routes — always available regardless of login state
+    if (key === 'login') return <LoginScreen />;
+    if (key === 'register') return <RegisterScreen />;
+
+    // If not authenticated redirect to login
+    if (!authUser) return <LoginScreen />;
+
     switch (key) {
       case 'home':
         return <HomePage />;
       case 'eventDetails':
-        if (!eventData) {
-          return <HomePage />;
-        }
-        return <EventDetails {...eventData} />;
+        return eventData ? <EventDetails {...eventData} /> : <HomePage />;
+      case 'dashboard':
+        return <Dashboard />;
+      case 'createEvent':
+        return <CreateEvent />;
       case 'profile':
         return <ProfileScreen />;
+      case 'admin':
+        return <AdminPanel />;
       default:
         return <HomePage />;
     }
-  }, [theme, eventData]);
+  };
 
   return (
     <>
       <Stack.Screen options={SCREEN_OPTIONS} />
-      <View className={currentRoute === 'profile' ? 'flex-1' : 'flex-1 items-center justify-center gap-8 p-4'}>
+      <View style={{ flex: 1 }}>
         {renderPage(currentRoute)}
       </View>
     </>
@@ -75,7 +80,6 @@ const THEME_ICONS = {
 
 function ThemeToggle() {
   const { colorScheme, toggleColorScheme } = useColorScheme();
-
   return (
     <Button
       onPressIn={toggleColorScheme}

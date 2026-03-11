@@ -38,19 +38,19 @@ const sharedFaculty = [
   {
     id: 'f1', name: 'Dr. Meena Krishnan', rollOrEmpNo: 'EMP2045',
     avatarInitials: 'MK', avatarColor: '#7B68EE',
-    memberRole: 'staff' as const, subRole: 'class_advisor' as const,
+    memberRole: 'faculty' as const, subRole: 'class_advisor' as const,
     department: 'Computer Science', joinedDate: '2015-06-01',
   },
   {
     id: 'f2', name: 'Prof. Rajan Iyer', rollOrEmpNo: 'EMP1892',
     avatarInitials: 'RI', avatarColor: '#C0392B',
-    memberRole: 'staff' as const, subRole: 'department_coordinator' as const,
+    memberRole: 'faculty' as const, subRole: 'department_coordinator' as const,
     department: 'Computer Science', joinedDate: '2010-07-15',
   },
   {
     id: 'f3', name: 'Ms. Divya Menon', rollOrEmpNo: 'EMP3101',
     avatarInitials: 'DM', avatarColor: '#27AE60',
-    memberRole: 'org_advisor' as const, subRole: 'none' as const,
+    memberRole: 'faculty' as const, subRole: 'none' as const,
     department: 'Computer Science', joinedDate: '2019-01-10',
   },
 ];
@@ -86,14 +86,14 @@ const MOCK_USERS: Record<UserRole, User> = {
     managedMembers: [],
   },
 
-  staff: {
-    id: 'u-staff',
+  faculty: {
+    id: 'u-faculty',
     name: 'Ms. Divya Menon',
     email: 'divya.menon@college.edu',
     phone: '+91 97654 32198',
     avatarInitials: 'DM',
     avatarColor: '#27AE60',
-    primaryRole: 'staff',
+    primaryRole: 'faculty',
     department: 'Computer Science',
     institution: 'National Institute of Technology',
     rollOrEmpNo: 'EMP3101',
@@ -106,7 +106,7 @@ const MOCK_USERS: Record<UserRole, User> = {
         position: 'Faculty Advisor', joinedYear: '2020', isActive: true, memberCount: 48,
       },
     ],
-    managedMembers: [],
+    managedMembers: sharedStudents,
   },
 
   hod: {
@@ -136,37 +136,14 @@ const MOCK_USERS: Record<UserRole, User> = {
     managedMembers: [...sharedFaculty, ...sharedStudents],
   },
 
-  org_advisor: {
-    id: 'u-advisor',
-    name: 'Ms. Divya Menon',
-    email: 'divya.menon@college.edu',
-    phone: '+91 97654 32198',
-    avatarInitials: 'DM',
-    avatarColor: '#27AE60',
-    primaryRole: 'org_advisor',
-    department: 'Computer Science',
-    institution: 'National Institute of Technology',
-    rollOrEmpNo: 'EMP3101',
-    eventsAttended: 6,
-    eventsOrganised: 8,
-    eventsUpcoming: 1,
-    organisations: [
-      {
-        id: 'org3', orgName: 'IEEE Student Branch', orgType: 'association',
-        position: 'Faculty Advisor', joinedYear: '2020', isActive: true, memberCount: 48,
-      },
-    ],
-    managedMembers: sharedStudents,
-  },
-
-  vice_principal: {
-    id: 'u-vp',
+  management: {
+    id: 'u-management',
     name: 'Prof. Anitha Suresh',
-    email: 'vp@college.edu',
+    email: 'principal@college.edu',
     phone: '+91 99876 54321',
     avatarInitials: 'AP',
     avatarColor: '#8E44AD',
-    primaryRole: 'vice_principal',
+    primaryRole: 'management',
     department: 'Administration',
     institution: 'National Institute of Technology',
     rollOrEmpNo: 'EMP0010',
@@ -185,23 +162,18 @@ const MOCK_USERS: Record<UserRole, User> = {
   admin: {
     id: 'u-admin',
     name: 'Mr. Suresh Kumar',
-    email: 'admin@college.edu',
+    email: 'admin@eventmanager.com',
     phone: '+91 98001 23456',
     avatarInitials: 'SK',
     avatarColor: '#C0392B',
     primaryRole: 'admin',
     department: 'Administration',
-    institution: 'National Institute of Technology',
-    rollOrEmpNo: 'EMP0001',
-    eventsAttended: 55,
-    eventsOrganised: 30,
-    eventsUpcoming: 8,
-    organisations: [
-      {
-        id: 'org7', orgName: 'Student Affairs Board', orgType: 'committee',
-        position: 'Secretary', joinedYear: '2012', isActive: true, memberCount: 20,
-      },
-    ],
+    institution: 'System Admin',
+    rollOrEmpNo: 'ADMIN001',
+    eventsAttended: 0,
+    eventsOrganised: 0,
+    eventsUpcoming: 0,
+    organisations: [],
     managedMembers: [...sharedFaculty, ...sharedStudents],
   },
 };

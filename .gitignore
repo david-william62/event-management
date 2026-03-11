@@ -1,7 +1,5 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
-.env*
-
 # dependencies
 node_modules/
 
@@ -9,7 +7,6 @@ node_modules/
 .expo/
 dist/
 web-build/
-android/
 
 # Native
 *.orig.*
@@ -33,6 +30,7 @@ yarn-error.*
 
 # local env files
 .env*.local
+.env
 
 # typescript
 *.tsbuildinfo
@@ -42,3 +40,22 @@ yarn-error.*
 
 expo-env.d.ts
 # @end expo-cli
+
+
+# ─── Node / Expo ─────────────────────────────────────────────────────────────
+node_modules/
+.expo/
+dist/
+.env
+.env.local
+
+# ─── Android build artifacts ─────────────────────────────────────────────────
+android/build/
+android/.gradle/
+android/app/build/
+android/local.properties
+
+# ─── iOS build artifacts ─────────────────────────────────────────────────────
+ios/Pods/
+ios/*.xcworkspace/xcuserdata/
+ios/build/

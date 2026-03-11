@@ -1,17 +1,9 @@
-import { BottomNavigation, Icon, Provider } from "react-native-paper";
+import { BottomNavigation } from "react-native-paper";
 import React from "react";
 import { useColorScheme } from "nativewind";
 import { THEME } from "@/lib/theme";
 import { useNavigation } from "@/lib/navigation-context";
 
-
-const Sidebar = () => {
-  const [index, setIndex] = React.useState(0);
-
-  return (
-    <div></div>
-  )
-}
 
 export const BottomBar = ({ navlinks }: { navlinks: Array<{ key: string; title: string; icon: React.ElementType }> }) => {
   const { currentRoute, navigate } = useNavigation();

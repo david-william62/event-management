@@ -1,9 +1,11 @@
-import { View, ScrollView, StyleSheet } from 'react-native';
-import { Text, Button, Surface, Divider, useTheme } from 'react-native-paper';
+import { useState } from 'react';
+import { View, ScrollView, StyleSheet, Alert } from 'react-native';
+import { Text, Button, Surface, Divider, Chip, useTheme } from 'react-native-paper';
 import { useNavigation } from '@/lib/navigation-context';
+import { api } from '@/lib/api';
 
 type EventDetailsProps = {
-  eventId?: string;
+  id?: string;
   title: string;
   organiser: string;
   description: string;
@@ -12,12 +14,13 @@ type EventDetailsProps = {
   venue: string;
   category: string;
   registrationDeadline: string;
+  registrationEndISO?: string;
   contactEmail: string;
   maxParticipants: string;
 };
 
 export default function EventDetails({
-  eventId,
+  id,
   title,
   organiser,
   description,
@@ -26,23 +29,69 @@ export default function EventDetails({
   venue,
   category,
   registrationDeadline,
+  registrationEndISO,
   contactEmail,
   maxParticipants
 }: EventDetailsProps) {
   const { setCurrentRoute } = useNavigation();
   const theme = useTheme();
+  const [registering, setRegistering] = useState(false);
+  const [registered, setRegistered] = useState(false);
+
+  const registrationClosed = registrationEndISO
+    ? new Date(registrationEndISO) < new Date()
+    : false;
+
+  const handleRegister = async () => {
+    if (!id) {
+      Alert.alert('Error', 'Event ID is missing.');
+      return;
+    }
+    try {
+      setRegistering(true);
+      await api.post(`/api/events/${id}/register`);
+      setRegistered(true);
+      Alert.alert('Registered!', 'You have successfully registered for this event.');
+    } catch (err: any) {
+      Alert.alert('Registration Failed', err.message ?? 'Could not register for this event.');
+    } finally {
+      setRegistering(false);
+    }
+  };
+
+  const registerButtonLabel = registered
+    ? 'Registered ✓'
+    : registrationClosed
+      ? 'Registration Closed'
+      : 'Register Now';
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <View style={styles.content}>
         {/* Header */}
         <Surface style={[styles.headerSurface, { backgroundColor: theme.colors.elevation.level2 }]} elevation={1}>
-          <Text variant="headlineMedium" style={{ color: theme.colors.onSurface, marginBottom: 8 }}>
+          <Text variant="headlineMedium" style={{ color: theme.colors.onSurface, marginBottom: 8, fontWeight: '700' }}>
             {title}
           </Text>
-          <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>
+          <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant, marginBottom: 10 }}>
             Organized by: {organiser}
           </Text>
+          <View style={{ flexDirection: 'row', gap: 8 }}>
+            <Chip icon="tag-outline" compact style={{ backgroundColor: theme.colors.secondaryContainer }}>
+              <Text variant="labelSmall" style={{ color: theme.colors.onSecondaryContainer }}>
+                {category.charAt(0) + category.slice(1).toLowerCase()}
+              </Text>
+            </Chip>
+            {registrationClosed ? (
+              <Chip icon="lock-outline" compact style={{ backgroundColor: theme.colors.errorContainer }}>
+                <Text variant="labelSmall" style={{ color: theme.colors.onErrorContainer }}>Registration Closed</Text>
+              </Chip>
+            ) : (
+              <Chip icon="check-circle-outline" compact style={{ backgroundColor: theme.colors.primaryContainer }}>
+                <Text variant="labelSmall" style={{ color: theme.colors.onPrimaryContainer }}>Open</Text>
+              </Chip>
+            )}
+          </View>
         </Surface>
 
         {/* Event Details */}
@@ -51,69 +100,25 @@ export default function EventDetails({
             Event Details
           </Text>
 
-          <View style={styles.detailRow}>
-            <Text variant="labelLarge" style={{ color: theme.colors.onSurfaceVariant, minWidth: 160 }}>
-              Category:
-            </Text>
-            <Text variant="bodyLarge" style={{ color: theme.colors.onSurface, flex: 1 }}>
-              {category}
-            </Text>
-          </View>
-
-          <Divider style={{ marginVertical: 8 }} />
-
-          <View style={styles.detailRow}>
-            <Text variant="labelLarge" style={{ color: theme.colors.onSurfaceVariant, minWidth: 160 }}>
-              Date:
-            </Text>
-            <Text variant="bodyLarge" style={{ color: theme.colors.onSurface, flex: 1 }}>
-              {date}
-            </Text>
-          </View>
-
-          <Divider style={{ marginVertical: 8 }} />
-
-          <View style={styles.detailRow}>
-            <Text variant="labelLarge" style={{ color: theme.colors.onSurfaceVariant, minWidth: 160 }}>
-              Time:
-            </Text>
-            <Text variant="bodyLarge" style={{ color: theme.colors.onSurface, flex: 1 }}>
-              {time}
-            </Text>
-          </View>
-
-          <Divider style={{ marginVertical: 8 }} />
-
-          <View style={styles.detailRow}>
-            <Text variant="labelLarge" style={{ color: theme.colors.onSurfaceVariant, minWidth: 160 }}>
-              Venue:
-            </Text>
-            <Text variant="bodyLarge" style={{ color: theme.colors.onSurface, flex: 1 }}>
-              {venue}
-            </Text>
-          </View>
-
-          <Divider style={{ marginVertical: 8 }} />
-
-          <View style={styles.detailRow}>
-            <Text variant="labelLarge" style={{ color: theme.colors.onSurfaceVariant, minWidth: 160 }}>
-              Max Participants:
-            </Text>
-            <Text variant="bodyLarge" style={{ color: theme.colors.onSurface, flex: 1 }}>
-              {maxParticipants}
-            </Text>
-          </View>
-
-          <Divider style={{ marginVertical: 8 }} />
-
-          <View style={styles.detailRow}>
-            <Text variant="labelLarge" style={{ color: theme.colors.onSurfaceVariant, minWidth: 160 }}>
-              Registration Deadline:
-            </Text>
-            <Text variant="bodyLarge" style={{ color: theme.colors.onSurface, flex: 1 }}>
-              {registrationDeadline}
-            </Text>
-          </View>
+          {[
+            { label: 'Date', value: date },
+            { label: 'Time', value: time },
+            { label: 'Venue', value: venue },
+            { label: 'Participants', value: maxParticipants },
+            { label: 'Reg. Deadline', value: registrationDeadline },
+          ].map(({ label, value }, i) => (
+            <View key={label}>
+              {i > 0 && <Divider style={{ marginVertical: 8 }} />}
+              <View style={styles.detailRow}>
+                <Text variant="labelLarge" style={{ color: theme.colors.onSurfaceVariant, minWidth: 120 }}>
+                  {label}
+                </Text>
+                <Text variant="bodyLarge" style={{ color: theme.colors.onSurface, flex: 1 }}>
+                  {value}
+                </Text>
+              </View>
+            </View>
+          ))}
         </Surface>
 
         {/* Description */}
@@ -127,25 +132,37 @@ export default function EventDetails({
         </Surface>
 
         {/* Contact Information */}
-        <Surface style={[styles.section, { backgroundColor: theme.colors.surface }]} elevation={1}>
-          <Text variant="titleLarge" style={{ color: theme.colors.onSurface, marginBottom: 12 }}>
-            Contact Information
-          </Text>
-          <Text variant="bodyLarge" style={{ color: theme.colors.primary }}>
-            {contactEmail}
-          </Text>
-        </Surface>
+        {contactEmail ? (
+          <Surface style={[styles.section, { backgroundColor: theme.colors.surface }]} elevation={1}>
+            <Text variant="titleLarge" style={{ color: theme.colors.onSurface, marginBottom: 12 }}>
+              Contact Information
+            </Text>
+            <Text variant="bodyLarge" style={{ color: theme.colors.primary }}>
+              {contactEmail}
+            </Text>
+          </Surface>
+        ) : null}
 
         {/* Action Buttons */}
         <View style={styles.buttonContainer}>
           <Button
             mode="contained"
-            onPress={() => {/* Handle registration */ }}
+            onPress={handleRegister}
+            loading={registering}
+            disabled={registering || registered || registrationClosed}
             style={styles.registerButton}
-            buttonColor={theme.colors.primary}
-            textColor={theme.colors.onPrimary}
+            buttonColor={
+              registered ? theme.colors.secondary
+              : registrationClosed ? theme.colors.surfaceVariant
+              : theme.colors.primary
+            }
+            textColor={
+              registrationClosed && !registered
+                ? theme.colors.onSurfaceVariant
+                : theme.colors.onPrimary
+            }
           >
-            Register Now
+            {registerButtonLabel}
           </Button>
 
           <Button
@@ -163,34 +180,12 @@ export default function EventDetails({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  content: {
-    padding: 20,
-  },
-  headerSurface: {
-    padding: 20,
-    marginBottom: 16,
-    borderRadius: 12,
-  },
-  section: {
-    padding: 20,
-    marginBottom: 16,
-    borderRadius: 12,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  buttonContainer: {
-    marginTop: 16,
-    gap: 12,
-  },
-  registerButton: {
-    marginBottom: 8,
-  },
-  backButton: {
-    marginBottom: 8,
-  },
+  container: { flex: 1 },
+  content: { padding: 20 },
+  headerSurface: { padding: 20, marginBottom: 16, borderRadius: 12 },
+  section: { padding: 20, marginBottom: 16, borderRadius: 12 },
+  detailRow: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start' },
+  buttonContainer: { marginTop: 16, gap: 12 },
+  registerButton: { marginBottom: 8 },
+  backButton: { marginBottom: 8 },
 });

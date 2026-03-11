@@ -2,27 +2,24 @@
 
 export type UserRole =
   | 'student'
-  | 'staff'
+  | 'faculty'
   | 'hod'
-  | 'org_advisor'
-  | 'vice_principal'
+  | 'management'
   | 'admin';
 
 export const ROLE_LABELS: Record<UserRole, string> = {
   student: 'Student',
-  staff: 'Staff',
+  faculty: 'Staff / Faculty',
   hod: 'Head of Department',
-  org_advisor: 'Faculty Advisor',
-  vice_principal: 'Vice Principal',
+  management: 'Management',
   admin: 'Administrator',
 };
 
 export const ROLE_COLORS: Record<UserRole, string> = {
   student: '#4A90D9',
-  staff: '#7B68EE',
+  faculty: '#7B68EE',
   hod: '#E67E22',
-  org_advisor: '#27AE60',
-  vice_principal: '#8E44AD',
+  management: '#8E44AD',
   admin: '#C0392B',
 };
 
@@ -36,7 +33,8 @@ export type SubRole =
   | 'event_organiser'
   | 'mentor'
   | 'class_advisor'
-  | 'department_coordinator';
+  | 'department_coordinator'
+  | 'principal';
 
 export const SUB_ROLE_LABELS: Record<SubRole, string> = {
   none: 'No Sub-role',
@@ -47,6 +45,7 @@ export const SUB_ROLE_LABELS: Record<SubRole, string> = {
   mentor: 'Mentor',
   class_advisor: 'Class Advisor',
   department_coordinator: 'Dept. Coordinator',
+  principal: 'Principal',
 };
 
 // ─── Organisation membership ─────────────────────────────────────────────────

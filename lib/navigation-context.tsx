@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useCallback, useMemo, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from 'react';
+import { loadStoredAuth, type AuthUser } from './auth';
 
 type EventData = {
   id: string;
@@ -10,6 +11,7 @@ type EventData = {
   venue: string;
   category: string;
   registrationDeadline: string;
+  registrationEndISO: string;
   contactEmail: string;
   maxParticipants: string;
 };
@@ -21,6 +23,9 @@ type NavigationContextType = {
   currentIndex: number;
   eventData: EventData | null;
   setEventData: (data: EventData | null) => void;
+  authUser: AuthUser | null;
+  setAuthUser: (user: AuthUser | null) => void;
+  isAuthLoading: boolean;
 };
 
 const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
@@ -29,25 +34,45 @@ export const NavigationProvider = ({
   children,
   initialRoute = 'home'
 }: {
-  children: ReactNode;
+  children: React.ReactNode;
   initialRoute?: string;
 }) => {
   const [currentRoute, setCurrentRoute] = useState(initialRoute);
   const [eventData, setEventData] = useState<EventData | null>(null);
+  const [authUser, setAuthUserState] = useState<AuthUser | null>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
+
+  // Restore stored session on mount
+  useEffect(() => {
+    loadStoredAuth().then((user) => {
+      if (user) {
+        setAuthUserState(user);
+      } else {
+        setCurrentRoute('login');
+      }
+    }).finally(() => setIsAuthLoading(false));
+  }, []);
+
+  const setAuthUser = useCallback((user: AuthUser | null) => {
+    setAuthUserState(user);
+    if (!user) setCurrentRoute('login');
+  }, []);
 
   const navigate = useCallback((route: string) => {
     setCurrentRoute(route);
   }, []);
 
-  // Memoize the context value to prevent unnecessary re-renders
   const value = useMemo(() => ({
     currentRoute,
     navigate,
     setCurrentRoute,
-    currentIndex: 0, // This will be calculated in the consumer
+    currentIndex: 0,
     eventData,
     setEventData,
-  }), [currentRoute, navigate, eventData]);
+    authUser,
+    setAuthUser,
+    isAuthLoading,
+  }), [currentRoute, navigate, eventData, authUser, setAuthUser, isAuthLoading]);
 
   return (
     <NavigationContext.Provider value={value}>

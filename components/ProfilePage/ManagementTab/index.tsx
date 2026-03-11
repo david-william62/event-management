@@ -28,7 +28,7 @@ const SEGMENT_OPTIONS: Partial<Record<UserRole, { value: string; label: string }
     { value: 'faculty', label: 'Faculty' },
     { value: 'students', label: 'Students' },
   ],
-  vice_principal: [
+  management: [
     { value: 'faculty', label: 'Faculty' },
     { value: 'students', label: 'Students' },
   ],
@@ -36,7 +36,7 @@ const SEGMENT_OPTIONS: Partial<Record<UserRole, { value: string; label: string }
     { value: 'faculty', label: 'Faculty' },
     { value: 'students', label: 'Students' },
   ],
-  org_advisor: [
+  faculty: [
     { value: 'students', label: 'Members' },
   ],
 };
@@ -68,7 +68,7 @@ export const ManagementTab: React.FC<ManagementTabProps> = ({ members, managerRo
 
   const filtered = members
     .filter((m) => isFacultySegment
-      ? (m.memberRole === 'staff' || m.memberRole === 'org_advisor' || m.memberRole === 'hod')
+      ? (m.memberRole === 'faculty' || m.memberRole === 'hod')
       : (m.memberRole === 'student'),
     )
     .filter((m) =>
